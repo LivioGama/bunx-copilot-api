@@ -13,5 +13,5 @@ RUN if [ -f package.json ]; then bun install --frozen-lockfile; fi
 # Default command to run bunx copilot-api start
 CMD ["bunx", "copilot-api", "start"]
 
-# Expose port 3000 (default for copilot-api)
-EXPOSE 3000
+# Expose port 4141
+EXPOSE 4141

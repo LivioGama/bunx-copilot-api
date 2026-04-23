@@ -9,9 +9,16 @@ services:
       - NODE_ENV=production
       - PORT=4141
     restart: unless-stopped
+    volumes:
+      - copilot_auth:/root/.local/share/copilot-api
+      - copilot_config:/root/.config
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4141/health", "||", "exit", "1"]
-      interval: 30s
-      timeout: 10s
+      test: ["CMD-SHELL", "curl -fsS http://localhost:4141/ || exit 1"]
+      interval: 15s
+      timeout: 5s
       retries: 3
-      start_period: 40s
+      start_period: 30s
+
+volumes:
+  copilot_auth:
+  copilot_config:

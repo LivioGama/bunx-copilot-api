@@ -8,13 +8,14 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=4141
-      - API_KEY=${API_KEY:-your-secure-api-key-here}
-      - COPILOT_API_KEY=${COPILOT_API_KEY}
-      - AUTH_TOKEN=${AUTH_TOKEN}
     restart: unless-stopped
     volumes:
       - copilot_auth:/root/.local/share/copilot-api
       - copilot_config:/root/.config
+    labels:
+      # Traefik IP whitelist - only allow your IP and localhost
+      - "traefik.http.middlewares.copilot-ipwhitelist.ipwhitelist.sourcerange=31.165.224.115/32,127.0.0.1/32,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+      - "traefik.http.routers.copilot.middlewares=copilot-ipwhitelist"
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:4141/ || exit 1"]
       interval: 15s

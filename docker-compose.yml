@@ -1,10 +1,26 @@
 version: '3.8'
 
 services:
+  nginx-proxy:
+    image: nginx:alpine
+    ports:
+      - "4141:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - bunx-copilot-api
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "80"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
   bunx-copilot-api:
     build: .
-    ports:
-      - "4141:4141"
+    expose:
+      - "4141"
     environment:
       - NODE_ENV=production
       - PORT=4141
@@ -12,11 +28,6 @@ services:
     volumes:
       - copilot_auth:/root/.local/share/copilot-api
       - copilot_config:/root/.config
-    labels:
-      # Dokploy-compatible Traefik IP whitelist
-      - "traefik.enable=true"
-      - "traefik.http.middlewares.copilot-ipwhitelist.ipwhitelist.sourcerange=31.165.224.115/32,127.0.0.1/32"
-      - "traefik.http.routers.liviogamabunxcopilotapi-xldixg.middlewares=copilot-ipwhitelist@docker"
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:4141/ || exit 1"]
       interval: 15s

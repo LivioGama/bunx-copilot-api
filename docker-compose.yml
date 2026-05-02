@@ -13,9 +13,10 @@ services:
       - copilot_auth:/root/.local/share/copilot-api
       - copilot_config:/root/.config
     labels:
-      # Traefik IP whitelist - only allow your IP and localhost
-      - "traefik.http.middlewares.copilot-ipwhitelist.ipwhitelist.sourcerange=31.165.224.115/32,127.0.0.1/32,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
-      - "traefik.http.routers.copilot.middlewares=copilot-ipwhitelist"
+      # Dokploy-compatible Traefik IP whitelist
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.copilot-ipwhitelist.ipwhitelist.sourcerange=31.165.224.115/32,127.0.0.1/32"
+      - "traefik.http.routers.liviogamabunxcopilotapi-xldixg.middlewares=copilot-ipwhitelist@docker"
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:4141/ || exit 1"]
       interval: 15s

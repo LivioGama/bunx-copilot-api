@@ -8,6 +8,9 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=4141
+      - API_KEY=${API_KEY:-your-secure-api-key-here}
+      - COPILOT_API_KEY=${COPILOT_API_KEY}
+      - AUTH_TOKEN=${AUTH_TOKEN}
     restart: unless-stopped
     volumes:
       - copilot_auth:/root/.local/share/copilot-api
